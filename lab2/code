@@ -1,0 +1,121 @@
+// C (Set/Delay/Clear/Delay/Loop Algorithm)
+// MSP430: Flash/FRAM usage is 236 bytes. RAM usage is 160 bytes.
+
+#include <msp430.h>
+
+void main(void) {
+    WDTCTL = WDTPW | WDTHOLD;               // stop wdt
+    PM5CTL0 &= ~LOCKLPM5;                   // disable GPIO high impedance mode
+                                           
+    P1DIR |= 0x01;                          // set P1.0 to output 
+
+    for(;;) {
+        P1OUT |= 0x01;                      // set P1.0 HIGH
+        __delay_cycles(1000000);            // delay 1 second
+
+        P1OUT &= ~0x01;                     // set P1.0 LOW
+        __delay_cycles(1000000);            // delay 1 second
+    }
+}
+
+----------------------------------------------------------------
+
+;Assembly (Set/Delay/Clear/Delay/Loop Algorithm)
+;MSP430:  Flash/FRAM usage is 236 bytes. RAM usage is 160 bytes.
+
+init:
+    bic.w #0001h, &PM5CTL0
+    bis.b #BIT0, &P1DIR  	;set P1 out
+main:
+    bis.b #BIT0, &P1OUT  	;set LED HIGH
+    call #delay          	;call delay subroutine
+    bic.b #BIT0, &P1OUT  	;set LED LOW
+    call #delay          	;call delay subroutine
+    jmp main             	;loop forever
+delay:
+    mov.w #500000, R5    	;load the counter with cycles to delay
+loop:
+    dec.w R5             	;decrement the counter
+    jnz loop             	;if counter is not zero jump to start of loop
+    ret                  	;return
+
+----------------------------------------------------------------
+
+// Energia/C++ (Set/Delay/Clear/Delay/Loop Algorithm)
+// info: MSP430:  Flash/FRAM usage is 1050 bytes. RAM usage is 0 bytes.
+
+void setup() {                
+  pinMode(LED, OUTPUT); // set digital pin as output
+}
+
+void loop() {
+  digitalWrite(LED, HIGH);   // turn the LED on (HIGH is the voltage level)
+  delay(1000);               // wait for a second
+  digitalWrite(LED, LOW);    // turn the LED off by making the voltage LOW
+  delay(1000);               // wait for a second
+}
+
+----------------------------------------------------------------
+
+// C (Toggle/Delay/Loop Algorithm)
+// MSP430:  Flash/FRAM usage is 210 bytes. RAM usage is 160 bytes.
+
+#include <msp430.h>
+
+void main(void) {
+    WDTCTL = WDTPW | WDTHOLD;               // stop wdt
+    PM5CTL0 &= ~LOCKLPM5;                   // disable GPIO high impedance mode
+                                            
+    P1DIR |= 0x01;                          // set P1.0 to output 
+
+    for(;;) {
+        P1OUT ^= 0x01;                      // toggle P1.0
+        __delay_cycles(1000000);            // delay 1 second
+    }
+}
+
+----------------------------------------------------------------
+
+;Assembly Program (Toggle/Delay/Loop Algorithm)
+;MSP430:  Flash/FRAM usage is 128 bytes. RAM usage is 0 bytes.
+
+init:
+    bis.b #BIT0, &P1DIR
+    bic.b #LOCKLPM5, &PM5CTL0
+
+main:
+    bis.b #BIT0, &P1OUT ; set led on
+    mov.w #0FFFFh, R4   ; R4 is big num
+    mov.w #00005h, R5   ; for counter clock, 1 s to count down from FFFF to zero 5 times
+    mov.w #0FFFFh, R6   ; Set is big num
+    mov.w #00005h, R7   ; for counter clock, 1 s to count down from FFFF to zero 5 times
+
+delay_on:               ; set led on 1 s
+    dec.w R4            ; count down R4
+    jnz delay           ; cont if not zero
+    dec.w R5            ; count down R5
+    jnz delay           ; jump to loop delay_on if not zero
+    bic.b #BIT0, &P1OUT ; clear bit to turn led off
+    
+delay_off:              ; set led off 1 s
+    dec.w R6            ; count down R6
+    jnz delay2          ; cont if not zero
+    dec.w R7            ; count down R7
+    jnz delay2          ; jump to loop delay_off if not zero
+    jmp main            ; jump to main
+
+----------------------------------------------------------------
+
+// Energia/C++ (Toggle/Delay/Loop)
+// info: MSP430:  Flash/FRAM usage is 1130 bytes. RAM usage is 0 bytes.
+
+#define LED RED_LED // init led
+
+void setup() {
+  pinMode(LED, OUTPUT);  // set digital pin as output
+}
+
+void loop() {
+  digitalWrite(LED, digitalRead(LED) ^ 1);  // togglethe LED pin
+  delay(1000);                              // delay for 1 second
+}
