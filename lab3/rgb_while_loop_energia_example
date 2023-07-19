@@ -1,0 +1,71 @@
+#define RGB_BLUE_LED 37 
+#define RGB_GREEN_LED 38
+#define RGB_RED_LED 39
+
+void setup() 
+{ 
+  // initialize the digital pin as an output. 
+  pinMode(RGB_RED_LED, OUTPUT);
+  pinMode(RGB_GREEN_LED, OUTPUT);
+  pinMode(RGB_BLUE_LED, OUTPUT);
+  
+}
+void loop()
+{ 
+  int i=0;
+  while (i < 70)
+  {  
+    i++;
+    if (i<=10)
+  
+    {
+      digitalWrite(RGB_RED_LED, HIGH);
+      digitalWrite(RGB_GREEN_LED, LOW);
+      digitalWrite(RGB_BLUE_LED, LOW);
+      delay(500); 
+    }
+   else if (i<=20)
+    {
+    digitalWrite(RGB_RED_LED, LOW);
+    digitalWrite(RGB_GREEN_LED, HIGH);
+    digitalWrite(RGB_BLUE_LED, LOW);
+    delay(500);
+    }
+   else if (i<=30)
+    {
+    digitalWrite(RGB_RED_LED, LOW);
+    digitalWrite(RGB_GREEN_LED, LOW);
+    digitalWrite(RGB_BLUE_LED, HIGH);
+    delay(500);
+    }
+   else if (i<=40)
+    {
+    digitalWrite(RGB_RED_LED, HIGH);
+    digitalWrite(RGB_GREEN_LED, HIGH);
+    digitalWrite(RGB_BLUE_LED, LOW);
+    delay(500);
+    }
+   else if (i<=50)
+    {
+    digitalWrite(RGB_RED_LED, HIGH);
+    digitalWrite(RGB_GREEN_LED, LOW);
+    digitalWrite(RGB_BLUE_LED, HIGH);
+    delay(500);
+    }
+  
+   else if (i<=60)
+    {
+    digitalWrite(RGB_RED_LED, LOW);
+    digitalWrite(RGB_GREEN_LED, HIGH);
+    digitalWrite(RGB_BLUE_LED, HIGH);
+    delay(500);
+    }
+   else
+    {
+    digitalWrite(RGB_RED_LED, HIGH);
+    digitalWrite(RGB_GREEN_LED, HIGH);
+    digitalWrite(RGB_BLUE_LED, HIGH);
+    delay(500);
+    }
+  }
+}
