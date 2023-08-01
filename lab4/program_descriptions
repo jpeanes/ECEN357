@@ -1,0 +1,15 @@
+Multiplication - C
+
+The program gets values for the multiplicand (M) and multiplier (m), in this example M = 4 and m = 3. P is initialized to hold the product m*M and is set to 0, i is initialized to be a counting index. The program checks if m != 0, if it is not take the sum of M and P m number of times using a loop incrementing i by one each iteration. If m = 0, the product P is zero.
+
+Multiplication - Assembly
+
+M and m are set as 8 bits and assigned values, and a variable P is created. M and m are moved into R4 and R5 respectively, then check if R4 = 0. If R4 = 0, assign product as 0 and jump back to start of loop. If value is not zero, jump to adding section. Adding section has same functionality as C loop, but it decreases R5 each iteration and if R5 is not zero it jumps to top of adding section.
+
+Division - C
+
+Initialize devisor (dv) and dividend (Dn), and init remainder (r) and quotient (Q). Set value of Dn equal to r, check if dv = 0. If it is, r and Q both equal 0. If not, go into r >= dv loop, subtract r from dv and set equal to r, and increment Q by one, and return to beginning of loop until r < dv and store all variables.
+
+Division - Assembly
+
+dv and Dn initialized with their respective values, and init r and Q variables and move 0 into Q's memory location. Assign Dn into r, check if dv is zero. If it is, move 0 to r and jump back to main. If not, jump to subtraction section and compare dv and r. If r < dv, jump to main. If r > dv, subtract r from dv and increment Q, jump to top of subtraction loop until r < dv.
