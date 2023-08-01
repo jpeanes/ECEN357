@@ -1,0 +1,97 @@
+// C multiplication 
+#include <msp430.h> 
+
+int main(void)
+{
+	WDTCTL = WDTPW | WDTHOLD;	// stop wdt
+
+	unsigned int m = 3, M = 4; // multipliacand M, multiplier m
+	unsigned int P,i;  // initializes  P and i without assigning values
+	P = 0;  // set P to 0
+	if (M != 0){ // check if multiplicand is not zero
+	    for(i = 1;i <= m; i++){ // loop to add M m times to P
+	        P = P + M; // add value M to P
+	    }
+	}
+
+	while(1); // infinite loop
+	return 0;
+}
+
+// Assembly multiplication
+;-------------------------------------------------------------------------------
+; Main loop here
+;-------------------------------------------------------------------------------
+main:
+	mov.b M, R4 ; move value of M into R4
+	mov.b m, R5	; move value of m into R5
+	cmp #0, R4 ; compare R4 with 0
+	jnz adding	; if value of R4 is not 0, jump to adding section
+	mov.w #0, P; if value of R4 = 0, assign value 0 for P
+
+	jmp main ; jump back to main
+adding:   ; make the adding loop
+	add.b R4, P	; add R4 to P and assign the value back to P
+	dec.b R5	; decrement value in R5 by 1
+	jnz adding	; if R5 is not zero, jump back to adding
+	jmp main ; jump to main
+;-------------------------------------------------------------------------------
+; Variable data section
+;-------------------------------------------------------------------------------
+
+	.data 
+	.retain
+M: .byte 3 ; create and assign the value 4 in to the variable 8 bits location using .byte
+m: .byte 5 ; create and assign the value 5 in to the variable 8 bits location using .byte
+P: .space 2 ; allocate (without initializing) a single 16-bit memory location for P 
+
+// C division
+#include <msp430.h> 
+int main(void)
+{
+    WDTCTL = WDTPW | WDTHOLD;   // stop wdt
+
+    unsigned int dv = 3, Dn = 12; //Dn = 12, dv = 3
+    unsigned int r, Q; // declare the variable r for remainder and Q for quotient without assigning any value.
+    r=Dn; // assign the value of Dn into r
+    Q=0; // set Q as 0
+    if (dv==0){ // check if the divisor is zero
+        r=0; // if it is, assign r=0
+        }
+    else{ // if it is not
+        while(r>=dv){ // create the loop with condition that remainder is greater or equal than divisor
+            r=r-dv; // subtract remainder for the divisor
+            Q++; // increment Q by one
+        }
+    }
+
+    while(1); // infinite loop
+    return 0;
+}
+
+// Assembly division
+;-------------------------------------------------------------------------------
+; Main loop here
+;-------------------------------------------------------------------------------
+main:
+		mov.w #0,Q  ; assign zero into variable quotient
+		mov.w Dn,r	; assign value of Dn into the remainder
+		cmp.w #0,dv ; compare the value in dv with zero
+		jnz subtraction ; if dv not equal to zero, jump to subtraction section
+		mov.w #0,r ; if dv is zero move value of zero into r
+		jmp main ; jump to main
+subtraction:
+		cmp.w dv,r ; compare r with dv
+		jl main ; if the remainder is less than dv, jump back to main
+		sub.w dv,r ; if the remainder is greater than dv, subtract r from dv
+		inc.w Q ; increment Q by one
+		jmp subtraction ; jump to section subtraction
+;-------------------------------------------------------------------------------
+; Variable data section
+;-------------------------------------------------------------------------------
+		.data
+		.retain
+dv:		.long 3 ; crate and assign the value 3 into the variable dv 16 bits location, by using .long
+Dn:		.long 15 ; crate and assign the value 15 into the variable Dn 16 bits location, by using .long
+r:		.space 2 ; allocate (without initializing) a single 16-bit memory location for the remainder r
+Q:		.space 2 ; allocate (without initializing) a single 16-bit memory location for the quotient Q
