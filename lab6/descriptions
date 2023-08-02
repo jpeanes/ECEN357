@@ -1,0 +1,7 @@
+RGB LED
+  
+First the code initializes the ADC, timer, I/O ports. The ADC reads the analog input from the vertical joystick pot on the boosterpack board and uses the timer to generate a PWM signal at 256 Hz and duty cycle dependant on the ADC input. The loop tells the ADC to start conversions and waits for the next conv to update the timer duty cycle, then waits for another conversiton. Two ISRs are used to handle the timer CC interrupts. First the ISR flags when the timer counter reaches whatever is stored in CCR0 register, then the second ISR flags when the counter reaches whatever is stored in CCR1 for the end of the PWM pulse on time. Each time the ISR flags the led is turned on or off and the intensity changed.
+
+Buzzer
+
+The program sets up the same, ADC is set to 10 bit and SMCLK is source. Channel 8 is the vertical axis pot on the joystick. PWM timer function sets the count to zero, sets ACLK as source with 32768 Hz and UP counter mode, period is 1000 Hz, duty cycle 25% worked for the sound. A while loop listens for a new ADC conversion, sets the duty cycle by the ADC MEM0 register. The first ISR flags when CCR0 is 1000 and turns the buzzer on, then clears the compare flag. The second ISR flags at the pulse falling edge and turns off the buxxer, then clears its flag again.
