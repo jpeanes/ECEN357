@@ -1,0 +1,74 @@
+#include <msp430.h> 
+
+/**
+ * main.c
+ */
+void init_adc()
+{
+    // adc initialization
+    P5SEL1 |= BIT0;                  // configure P5.0 to connect to the adc
+    P5SEL0 |= BIT0;
+
+    ADCCTL0 &= ~ADCSHT;              // clear previous setting
+    ADCCTL0 |= ADCSHT_2;             // conversion cycles = 16
+    ADCCTL0 |= ADCON;                // turn adc on
+
+    ADCCTL1 |= ADCSSEL_2;            // select SMCLK as adc source
+    ADCCTL1 |= ADCSHP;               // get sample
+
+    ADCCTL2 &= ~ADCRES;              // clear previous setting
+    ADCCTL2 |= ADCRES_1;             // set the resolution of adc to 10-bit
+
+    ADCMCTL0 |= ADCINCH_8;           // select adc channel 8 (ver. joystick potentiometer) to be placed in MEM0 result register
+}
+
+void init_timer_pwm()
+{
+    // timer initialization
+    TB0CTL |= TBCLR;                 // clear timer
+    TB0CTL |= TBSSEL__ACLK;          // select ACLK as soure, 32,768 Hz
+    TB0CTL |= MC__UP;                // select the up mode for the counter
+    TB0CCR0 = 1000;                  // T = (1/1000) sec, 1000 Hz
+    TB0CTL |= CNTL_2;
+    TB0CCR1 = 250;                   // pulse width = 250/1000 sec, duty cyle = 25%
+
+    TB0CCTL0 |= CCIE;                // enable TB0 CCR0 compare IRQ
+    TB0CCTL0 &=~CCIFG;               // clear flag for TB0 CCR0 compare
+    TB0CCTL1 |= CCIE;                // enable TB0 CCR1 compare IRQ
+    TB0CCTL1 &=~CCIFG;               // clear flag for TB0 CCR1 compare
+}
+
+int main(void)
+{
+    WDTCTL = WDTPW | WDTHOLD;        // stop wdt
+    PM5CTL0 &= ~LOCKLPM5;            // disable low power mode 
+
+    P2DIR |= BIT1;                   // output to buzzer
+    P2OUT &= ~BIT1;                  // initialize value on outputs
+
+    init_adc();                      // initialize adc module
+    init_timer_pwm();                // initialize timer module
+    _enable_interrupt();             // enable interrupts globally
+
+    while(1)
+    {
+        ADCCTL0 |= ADCENC | ADCSC;   // enable to start conversions
+        while((ADCIFG & ADCIFG0) ==0); // wait for new conversion
+        TB0CCR1 = ADCMEM0;           // control the duty cycle register with 10-bit value
+    }
+}
+
+#pragma vector = TIMER0_B0_VECTOR
+__interrupt void IRS_TB0_CCR0(void)
+{
+    P2OUT |= BIT1;                   // turn on buzzer
+    TB0CCTL0 &= ~CCIFG;              // clear the CCR0 compare flag
+}
+
+// the CCR1 compare interrupt occurs at the end of the pulse_on time
+#pragma vector = TIMER0_B1_VECTOR
+__interrupt void IRS_TB0_CCR1(void)
+{
+    P2OUT &= ~BIT1;                  // turn off buzzer
+    TB0CCTL1 &= ~CCIFG;              // clear CCR1 compare flag
+}
