@@ -1,0 +1,33 @@
+Lab Assignment #6: Controlling LEDs and Buzzer sound with Joystick - Due Wednesday August 2, 2023 by 11 PM!!!
+Instructor and Author Slides Related to Analog Interfacing
+ 1 - MSP430 Timer Compares.pptx
+ 2 - Analog Interfacing Intro_PWM_for_D-A_Conversion.pptx
+ 3_Analog-to-Digital Conversion Overview.pptx
+ 4_Analog-to-Digital Conversion on MSP432FR2355.pptx
+ 5_Program Examples of Analog-to-Digital Conversion.pptx
+
+Also, view the authors PWM and ADC videos at this site.
+
+ 
+Solutions to Challenges in Slide Set #2 and #5 (PWM and ADC)
+
+ pwm_ex1.c
+ adc_poll_ex.c
+
+ adc_intr_ex.c
+ 
+Hands-On Activity 
+For this assignment, you will create a C program the combines a variation of the PWM and the ADC example programs from the author's PPT slides to create a program that will continously sample the input voltage coming from the vertical axis of the joystick on you MKII Boosterpack board, and use that sampled voltage to control the intensity (brightness) of a yellow light coming from the RGB LED on the MKII Boosterpack. Use a constant frequency of 32,768 Hz for the PWM that drives the LEDs. Also configure the timer counter length to 12 bits. Keep in mind that the range of the joystick output is for 0V (leftmost position)  through 3.3v (rightmost position). The brightness of the light is to be controlled by varying the duty cycle of the PWM from 0% to 100% (leftmost to rightmost joystick positions).
+Now modify this program to use the same approach to control the intensity (loudness) of the buzzer on board the MKII BoosterPack, instead of the yellow light brightness. NOTE: In order to get a sensible output from the buzzer, you will need to vary the duty cycle of  the driving PWM signal between 0% to only 50% (leftmost to rightmost), because of the the way that sound is created mechanically by the buzzer (i.e. a 0% and 100% duty cycles equate to DC signals, which have 0 sound intensity). Try varying the duty cycle from 0% to 100% with the joystick, and observe the difference
+
+Turn in the following
+The commented C code for bothe programs
+Flowchart for each program.
+Discussion of observations
+
+BONUS ADC EXAMPLE (Help with Accelerometer Access):
+The following code performs repeated ADC readings from all of the directly accessisble analog sensors on the you MKII Boosterpack.You can view the changes in the analog values with the "Expressions" view of the CCS debugger.
+
+ all_analog_onBP.c
+  
+Video Demo of PWM Servo Control
