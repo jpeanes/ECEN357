@@ -2,21 +2,21 @@
 
 void init_adc()
 {
-    // adc init
-    P5SEL1 |= BIT0;                  // configure P5.0 to adc
+    // adc initialization
+    P5SEL1 |= BIT0;                  // configure P5.0 to connect to the adc
     P5SEL0 |= BIT0;
 
-    ADCCTL0 &= ~ADCSHT;              // clear previous settings
+    ADCCTL0 &= ~ADCSHT;              // clear previous setting
     ADCCTL0 |= ADCSHT_2;             // conversion cycles = 16
     ADCCTL0 |= ADCON;                // turn adc on
 
     ADCCTL1 |= ADCSSEL_1;            // select SMCLK as adc source
     ADCCTL1 |= ADCSHP;               // get sample from sample-hold timer
 
-    ADCCTL2 &= ~ADCRES;              // clear previous setting for resolution
-    ADCCTL2 |= ADCRES_0;             // adc resolution 8-bit
+    ADCCTL2 &= ~ADCRES;              // clear previous setting
+    ADCCTL2 |= ADCRES_0;             // adc to 8-bit
 
-    ADCMCTL0 |= ADCINCH_5;           // select adc channel 5 (hor. joystick potentiometer) to be placed in MEM0 result register
+    ADCMCTL0 |= ADCINCH_8;           // select adc channel 8 (vert. joystick potentiometer) to be placed in MEM0 result register
 }
 
 void init_timer_pwm()
