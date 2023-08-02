@@ -151,6 +151,7 @@ $2:
     jge loop
 
     jmp main                  ; jump to main
+    NOP
 
 // assembly while loop
 
@@ -211,4 +212,4 @@ $2:
     jge inner_loop
 
     jmp outer_loop            ; Jump back to outer loop
-
+    NOP
