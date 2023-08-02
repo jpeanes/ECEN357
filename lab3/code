@@ -91,3 +91,124 @@ void main(void)
         i--;  // secrement the loop variable
     }
 }
+
+// assembly for loop
+
+init:
+    bic.w #0001h, &PM5CTL0     ; Disable the GPIO power-on default high-impedance mode
+    bis.b #0x07, &P6DIR       ; Set P6.0, P6.1, P6.2 to output direction
+
+main:
+    mov.w #70, R7             ; Initialize loop counter R7 to 70
+
+loop:
+    ; RGB Control Logic
+    cmp.w #60, R7
+    jl check_50
+    bis.b #0x07, &P6OUT       ; RED + GREEN + BLUE
+    jmp delay
+check_50:
+    cmp.w #50, R7
+    jl check_40
+    bis.b #0x06, &P6OUT       ; GREEN + BLUE
+    jmp delay
+check_40:
+    cmp.w #40, R7
+    jl check_30
+    bis.b #0x05, &P6OUT       ; RED + BLUE
+    jmp delay
+check_30:
+    cmp.w #30, R7
+    jl check_20
+    bis.b #0x03, &P6OUT       ; RED + GREEN
+    jmp delay
+check_20:
+    cmp.w #20, R7
+    jl check_10
+    bis.b #0x04, &P6OUT       ; BLUE
+    jmp delay
+check_10:
+    cmp.w #10, R7
+    jl default_color
+    bis.b #0x02, &P6OUT       ; GREEN
+    jmp delay
+default_color:
+    bis.b #0x01, &P6OUT       ; RED
+    jmp delay
+
+delay:
+    mov.w #04h, R5
+$1:
+    mov.w #0xFFFF, R4
+$2:
+    dec.w R4
+    jnz $2
+    dec.w R5
+    jnz $1
+
+    dec.w R7                  ; decrement the loop counter
+    cmp.w #1, R7              ; check if R7 is still >= 1
+    jge loop
+
+    jmp main                  ; jump to main
+
+// assembly while loop
+
+init:
+    bic.w #0001h, &PM5CTL0     ; Disable the GPIO power-on default high-impedance mode
+    bis.b #0x07, &P6DIR       ; Set P6.0, P6.1, P6.2 to output direction
+
+outer_loop:
+    mov.w #70, R7             ; reset loop counter R7 to 70
+
+inner_loop:
+    ; RGB Control Logic
+    cmp.w #60, R7
+    jl check_50
+    bis.b #0x07, &P6OUT       ; RED + GREEN + BLUE
+    jmp delay
+check_50:
+    cmp.w #50, R7
+    jl check_40
+    bis.b #0x06, &P6OUT       ; GREEN + BLUE
+    jmp delay
+check_40:
+    cmp.w #40, R7
+    jl check_30
+    bis.b #0x05, &P6OUT       ; RED + BLUE
+    jmp delay
+check_30:
+    cmp.w #30, R7
+    jl check_20
+    bis.b #0x03, &P6OUT       ; RED + GREEN
+    jmp delay
+check_20:
+    cmp.w #20, R7
+    jl check_10
+    bis.b #0x04, &P6OUT       ; BLUE
+    jmp delay
+check_10:
+    cmp.w #10, R7
+    jl default_color
+    bis.b #0x02, &P6OUT       ; GREEN
+    jmp delay
+default_color:
+    bis.b #0x01, &P6OUT       ; RED
+    jmp delay
+
+delay:
+    mov.w #04h, R5
+$1:
+    mov.w #0xFFFF, R4
+$2:
+    dec.w R4
+    jnz $2
+    dec.w R5
+    jnz $1
+
+    dec.w R7                  ; Decrement the loop counter
+    cmp.w #1, R7              ; Check if R7 is still >= 1
+    jge inner_loop
+
+    jmp outer_loop            ; Jump back to outer loop
+
