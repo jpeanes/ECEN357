@@ -1,0 +1,93 @@
+// c for loop
+#include <msp430.h>
+
+void main(void)
+{
+    int i;  // counter index
+
+    WDTCTL = WDTPW | WDTHOLD;               // Stop watchdog timer
+    PM5CTL0 &= ~LOCKLPM5;                   // Disable the GPIO power-on default high-impedance mode
+    P6DIR |= 0x07;  // Set P6.0, P6.1, P6.2 to output direction
+
+    while (1)  // infinite loop
+    {
+        for (i = 70; i >= 1; i--)  // compiler told me the loop should count down instead of up
+        {
+            if (i > 60)
+            {
+                P6OUT = 0x07;  // RED + GREEN + BLUE
+            }
+            else if (i > 50)
+            {
+                P6OUT = 0x06;  // GREEN + BLUE
+            }
+            else if (i > 40)
+            {
+                P6OUT = 0x05;  // RED + BLUE
+            }
+            else if (i > 30)
+            {
+                P6OUT = 0x03;  // RED + GREEN
+            }
+            else if (i > 20)
+            {
+                P6OUT = 0x04;  // BLUE
+            }
+            else if (i > 10)
+            {
+                P6OUT = 0x02;  // GREEN
+            }
+            else
+            {
+                P6OUT = 0x01;  // RED
+            }
+            __delay_cycles(100000);  // delay
+        }
+    }
+}
+
+// c while loop
+#include <msp430.h>
+
+void main(void)
+{
+    int i = 70;  // counter index
+  
+    WDTCTL = WDTPW | WDTHOLD;               // Stop watchdog timer
+    PM5CTL0 &= ~LOCKLPM5;                   // Disable the GPIO power-on default high-impedance mode
+    P6DIR |= 0x07;  // Set P6.0, P6.1, P6.2 to output direction
+
+    while (i >= 1)  // while loop to count downwards
+    {
+        if (i > 60)
+        {
+            P6OUT = 0x07;  // RED + GREEN + BLUE
+        }
+        else if (i > 50)
+        {
+            P6OUT = 0x06;  // GREEN + BLUE
+        }
+        else if (i > 40)
+        {
+            P6OUT = 0x05;  // RED + BLUE
+        }
+        else if (i > 30)
+        {
+            P6OUT = 0x03;  // RED + GREEN
+        }
+        else if (i > 20)
+        {
+            P6OUT = 0x04;  // BLUE
+        }
+        else if (i > 10)
+        {
+            P6OUT = 0x02;  // GREEN
+        }
+        else
+        {
+            P6OUT = 0x01;  // RED
+        }
+        __delay_cycles(100000);  // delay
+        i--;  // secrement the loop variable
+    }
+}
